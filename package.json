@@ -1,0 +1,26 @@
+{
+  "name": "nsapp-react",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "browserify": "^7.0.3",
+    "react": "^0.12.2",
+    "reactify": "^0.17.1",
+    "watchify": "^2.2.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gitaarik/nsapp-react.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gitaarik/nsapp-react/issues"
+  },
+  "homepage": "https://github.com/gitaarik/nsapp-react"
+}
