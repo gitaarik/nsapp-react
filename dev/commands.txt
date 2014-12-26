@@ -1,0 +1,1 @@
+watchify -t reactify js/base.js -o build/base.js
