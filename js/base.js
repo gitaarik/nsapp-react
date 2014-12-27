@@ -4,20 +4,32 @@ var $ = require('jquery');
 var SearchStations = React.createClass({
 
     getInitialState: function() {
-        return {allStations: {}};
+        return {
+            stations: {},
+            stationNames: {}
+        };
     },
 
     componentDidMount: function() {
+
+        $.get(
+            'http://nsapi.televisionsmostpopularartinstructors.com/api/v1/stationnames/',
+            function(response) {
+                this.setState({stationNames: response});
+            }.bind(this)
+        );
+
         $.get(
             'http://nsapi.televisionsmostpopularartinstructors.com/api/v1/stations/',
             function(response) {
-                this.setState({allStations: response});
+                this.setState({stations: response});
             }.bind(this)
         );
+
     },
 
     render: function() {
-        return <SearchStationsFilter data={allStations: this.state.allStations} />
+        return <SearchStationsFilter data={this.state} />
     }
 
 });
@@ -25,21 +37,24 @@ var SearchStations = React.createClass({
 var SearchStationsFilter = React.createClass({
 
     getInitialState: function() {
-        return {
-            data: {
-                allStations: {},
-                searchResults: {}
-            }
-        };
+        return {searchTerm: ''};
     },
 
     render: function() {
         return (
             <section className="search-stations">
-                <input type="text" className="search-stations-input" />
-                <SearchResults data={this.state.allStations} />
+                <input type="text" ref="input" className="input" onKeyUp={this.handleKeyUp} />
+                <SearchResults data={this.getSearchResults()} />
             </section>
         );
+    },
+
+    handleKeyUp: function() {
+        this.setState({searchTerm: this.refs.input.getDOMNode().value});
+    },
+
+    getSearchResults: function() {
+        return this.props.data.stations;
     }
 
 });
