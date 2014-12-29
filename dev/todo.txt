@@ -1,0 +1,2 @@
+Use react rooter:
+https://github.com/rackt/react-router/blob/master/docs/guides/overview.md

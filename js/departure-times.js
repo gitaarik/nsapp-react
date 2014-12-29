@@ -1,4 +1,9 @@
 var React = require('react');
+var Router = require('react-router');
+var Route = Router.Route;
+var DefaultRoute = Router.DefaultRoute;
+var RouteHandler = Router.RouteHandler;
+var Link = Router.Link;
 var $ = require('jquery');
 var searchStations = require('./helpers/_search-stations.js');
 
@@ -42,7 +47,8 @@ var SearchStationsFilter = React.createClass({
         return (
             <section className="search-stations">
                 <div className="input-container">
-                    <input type="text" ref="input" className="input" placeholder="Zoek station" onKeyUp={this.handleKeyUp} />
+                    <input type="text" ref="input" className="input"
+                    placeholder="Zoek station" onKeyUp={this.handleKeyUp} />
                 </div>
                 <SearchResults data={searchStations(
                     this.state.searchTerm,
@@ -71,7 +77,11 @@ var SearchResults = React.createClass({
 
         for (var result in this.props.data) {
             resultNodes.push(
-                <li key={result} className="result">{this.props.data[result].name}</li>
+                <li key={result} className="result">
+                    <Link to="station">
+                        {this.props.data[result].name}
+                    </Link>
+                </li>
             );
         }
 
@@ -85,12 +95,40 @@ var SearchResults = React.createClass({
 
 });
 
-React.render(
-    <div className="departure-times">
-        <header className="header">
-            <h1>NS Vertrektijden</h1>
-        </header>
-        <SearchStations />
-    </div>,
-    document.getElementById('app')
+var DepartureTimes = React.createClass({
+
+    render: function() {
+        return (
+            <div className="departure-times">
+                <header className="header">
+                    <h1>NS Vertrektijden</h1>
+                </header>
+                <RouteHandler />
+            </div>
+        );
+    }
+
+});
+
+var Station = React.createClass({
+
+    render: function() {
+        return (
+            <div className="station">
+                station!
+            </div>
+        );
+    }
+
+});
+
+var routes = (
+  <Route name="departure-times" path="/" handler={DepartureTimes}>
+    <DefaultRoute handler={SearchStations}/>
+    <Route name="station" handler={Station}/>
+  </Route>
 );
+
+Router.run(routes, function(Handler) {
+  React.render(<Handler />, document.body);
+});
