@@ -1,3 +1,6 @@
+var Levenshtein = require('levenshtein');
+
+
 module.exports = function(searchTerm, stationNames, stations) {
 
     function getStations() {
@@ -14,7 +17,6 @@ module.exports = function(searchTerm, stationNames, stations) {
             // Also refactor probably...
 
             stationName = stationName.toLowerCase();
-            searchTerm = searchTerm.toLowerCase();
             var score = 0;
             var searchWords;
             var searchWordKey;
@@ -63,7 +65,7 @@ module.exports = function(searchTerm, stationNames, stations) {
                         }
 
                         if (searchWord.length > 3) {
-                            levenshteinScore = levenshtein(searchWord, stationWord.substr(0, searchWord.length));
+                            levenshteinScore = new Levenshtein(searchWord, stationWord.substr(0, searchWord.length)).distance;
                             if (levenshteinScore > 3) {
                                 score -= levenshteinScore;
                             } else {
@@ -71,7 +73,7 @@ module.exports = function(searchTerm, stationNames, stations) {
                             }
                         }
 
-                        levenshteinScore = levenshtein(searchWord, stationWord);
+                        levenshteinScore = new Levenshtein(searchWord, stationWord).distance;
                         if (levenshteinScore > 3) {
                             score -= levenshteinScore;
                         } else {
@@ -82,7 +84,7 @@ module.exports = function(searchTerm, stationNames, stations) {
 
                 }
 
-                levenshteinScore = levenshtein(searchTerm, stationName);
+                levenshteinScore = new Levenshtein(searchTerm, stationName).distance;
                 if (levenshteinScore > 3) {
                     score -= levenshteinScore;
                 } else {
@@ -127,8 +129,14 @@ module.exports = function(searchTerm, stationNames, stations) {
 
     }
 
-    // Remove duplicates AFTER sorting so that the duplicate
-    // that has the best position will be preserved.
-    return removeDuplicates(sort(getStations()));
+    searchTerm = searchTerm.trim().toLowerCase();
+
+    if (searchTerm.length > 1) {
+        // Remove duplicates AFTER sorting so that the duplicate
+        // that has the best position will be preserved.
+        return removeDuplicates(sort(getStations()));
+    } else {
+        return [];
+    }
 
 };

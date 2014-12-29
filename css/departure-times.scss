@@ -1,0 +1,52 @@
+@import "compass/reset";
+
+html, body {
+    font-family: Arial, sans-serif;
+}
+
+.departure-times {
+
+    .header {
+        background: #000D66;
+        line-height: 48px;
+        font-size: 20px;
+        color: #FFFFFF;
+        text-align: center;
+    }
+
+    .search-stations {
+
+        .input-container {
+
+            padding: 20px 10px;
+            border-bottom: 1px solid #DDD;
+
+            .input {
+                width: 100%;
+                padding: 0;
+                margin: 0;
+                border: none;
+                font-size: 18px;
+                color: #777;
+            }
+
+        }
+
+        .search-results {
+
+            .result {
+                padding: 20px 10px;
+                display: block;
+                font-size: 20px;
+                color: #000D66;
+            }
+
+            .result:nth-child(2n+1) {
+                background: #F2F2F7;
+            }
+
+        }
+
+    }
+
+}

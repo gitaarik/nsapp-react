@@ -1,1 +1,2 @@
-watchify -t reactify js/base.js -o build/base.js
+browserify -t reactify ../js/departure-times.js -o ../www/js/departure-times.js
+watchify -t reactify ../js/departure-times.js -o ../www/js/departure-times.js
