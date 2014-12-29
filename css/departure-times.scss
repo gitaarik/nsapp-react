@@ -16,32 +16,27 @@ html, body {
 
     .search-stations {
 
-        .input-container {
-
+        .input {
+            width: 100%;
             padding: 20px 10px;
+            border: none;
             border-bottom: 1px solid #DDD;
-
-            .input {
-                width: 100%;
-                padding: 0;
-                margin: 0;
-                border: none;
-                font-size: 18px;
-                color: #777;
-            }
-
+            margin: 0;
+            font-size: 18px;
+            color: #777;
         }
 
         .search-results {
 
-            .result {
+            .result .link {
                 padding: 20px 10px;
                 display: block;
                 font-size: 20px;
                 color: #000D66;
+                text-decoration: none;
             }
 
-            .result:nth-child(2n+1) {
+            .result:nth-child(2n+1) .link {
                 background: #F2F2F7;
             }
 

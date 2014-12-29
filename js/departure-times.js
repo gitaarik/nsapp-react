@@ -12,27 +12,46 @@ var SearchStations = React.createClass({
 
     getInitialState: function() {
         return {
+            lastUpdatedTime: 0,
             stations: {},
             stationNames: {}
         };
     },
 
-    componentDidMount: function() {
+    updateStations: function() {
 
-        $.when(
-            $.get('http://nsapi.televisionsmostpopularartinstructors.com/api/v1/stationnames/'),
-            $.get('http://nsapi.televisionsmostpopularartinstructors.com/api/v1/stations/')
-        ).done(function(stationNames, stations) {
-            this.setState({
-                'stationNames': stationNames[0],
-                'stations': stations[0]
-            });
-        }.bind(this));
+        if (this.state.lastUpdatedTime < Date.now() - 5000) {
+
+            $.when(
+                $.get('http://nsapi.televisionsmostpopularartinstructors.com/api/v1/stationnames/'),
+                $.get('http://nsapi.televisionsmostpopularartinstructors.com/api/v1/stations/')
+            ).done(function(stationNames, stations) {
+
+                if (this.isMounted()) {
+                    this.setState({
+                        'lastUpdatedTime': Date.now(),
+                        'stationNames': stationNames[0],
+                        'stations': stations[0]
+                    });
+                }
+
+            }.bind(this));
+
+        }
 
     },
 
     render: function() {
-        return <SearchStationsFilter data={this.state} />
+
+        this.updateStations();
+
+        var stationsData = {
+            stations: this.state.stations,
+            stationNames: this.state.stationNames
+        };
+
+        return <SearchStationsFilter data={stationsData} />
+
     }
 
 });
@@ -46,10 +65,10 @@ var SearchStationsFilter = React.createClass({
     render: function() {
         return (
             <section className="search-stations">
-                <div className="input-container">
-                    <input type="text" ref="input" className="input"
-                    placeholder="Zoek station" onKeyUp={this.handleKeyUp} />
-                </div>
+                <input
+                    type="text" ref="input" className="input"
+                    placeholder="Zoek station" onKeyUp={this.handleKeyUp}
+                />
                 <SearchResults data={searchStations(
                     this.state.searchTerm,
                     this.props.data.stationNames,
@@ -78,7 +97,10 @@ var SearchResults = React.createClass({
         for (var result in this.props.data) {
             resultNodes.push(
                 <li key={result} className="result">
-                    <Link to="station">
+                    <Link
+                        to="station" className="link"
+                        params={{stationName: this.props.data[result].code}}
+                    >
                         {this.props.data[result].name}
                     </Link>
                 </li>
@@ -112,10 +134,12 @@ var DepartureTimes = React.createClass({
 
 var Station = React.createClass({
 
+    mixins: [Router.State],
+
     render: function() {
         return (
             <div className="station">
-                station!
+                Station {this.getParams().stationName}!
             </div>
         );
     }
@@ -125,7 +149,7 @@ var Station = React.createClass({
 var routes = (
   <Route name="departure-times" path="/" handler={DepartureTimes}>
     <DefaultRoute handler={SearchStations}/>
-    <Route name="station" handler={Station}/>
+    <Route name="station" path=":stationName" handler={Station}/>
   </Route>
 );
 
