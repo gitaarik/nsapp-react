@@ -25,7 +25,7 @@ var SearchStations = React.createClass({
             stations: {},
 
             // the search terms the user is supplying
-            searchTerm: ''
+            searchTerm: this.props.searchTerm
 
         };
 
@@ -95,7 +95,8 @@ var SearchStations = React.createClass({
             <article className="search-stations">
                 <input
                     type="text" ref="input" className="input"
-                    placeholder="Zoek station" onKeyUp={this.handleKeyUp}
+                    defaultValue={this.state.searchTerm} placeholder="Zoek station"
+                    onKeyUp={this.handleKeyUp}
                 />
                 {resultsNode}
             </article>
@@ -104,7 +105,12 @@ var SearchStations = React.createClass({
     },
 
     handleKeyUp: function() {
-        this.setState({searchTerm: this.refs.input.getDOMNode().value});
+
+        var searchTerm = this.refs.input.getDOMNode().value;
+
+        this.setState({'searchTerm': searchTerm});
+        this.props.searchTermUpdated(searchTerm);
+
     }
 
 });
@@ -341,13 +347,31 @@ var Departures = React.createClass({
 
     mixins: [Router.State],
 
+    getInitialState: function() {
+        return {
+            searchTerm: ''
+        };
+    },
+
     render: function() {
 
         var backButtonNode;
+        var routeHandlerNode;
+
+        if (this.isActive('search-stations')) {
+            routeHandlerNode = (
+                <RouteHandler
+                    searchTerm={this.state.searchTerm}
+                    searchTermUpdated={this.searchTermUpdated}
+                />
+            );
+        } else {
+            routeHandlerNode = <RouteHandler />;
+        }
 
         if (this.isActive('station')) {
             backButtonNode = (
-                <Link to="departures" className="back-button">&lt;</Link>
+                <Link to="search-stations" className="back-button">&lt;</Link>
             );
         }
 
@@ -357,16 +381,21 @@ var Departures = React.createClass({
                     {backButtonNode}
                     <h1>NS Vertrektijden</h1>
                 </header>
-                <RouteHandler />
+                {routeHandlerNode}
             </div>
         );
+
+    },
+
+    searchTermUpdated: function(searchTerm) {
+        this.setState({'searchTerm': searchTerm});
     }
 
 });
 
 var routes = (
   <Route name="departures" path="/" handler={Departures}>
-    <DefaultRoute handler={SearchStations}/>
+    <DefaultRoute name="search-stations" handler={SearchStations}/>
     <Route name="station" path=":stationName" handler={Station}/>
   </Route>
 );
