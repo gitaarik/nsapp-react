@@ -15,11 +15,6 @@ $_red-color: #F00;
 
     $departures-header-height: 50px;
 
-    .loading {
-        padding: 20px;
-        text-align: center;
-    }
-
     .departures-header {
 
         position: relative;
@@ -58,11 +53,13 @@ $_red-color: #F00;
         }
 
         .loading,
+        .failed,
         .no-results {
             text-align: center;
             padding: 20px;
         }
 
+        .failed,
         .no-results {
             color: $_red-color;
         }
@@ -101,6 +98,18 @@ $_red-color: #F00;
         }
 
         .departures {
+
+            .loading,
+            .failed,
+            .no-results {
+                text-align: center;
+                padding: 20px;
+            }
+
+            .failed,
+            .no-results {
+                color: $_red-color;
+            }
 
             $table-header-height: 40px;
 

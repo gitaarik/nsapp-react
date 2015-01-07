@@ -15,7 +15,7 @@ var stationData = Object.create({
         return $.get(this.baseUrl + 'stations/');
     },
 
-    getStation: function(stationCode) {
+    getDepartures: function(stationCode) {
         return $.get(this.baseUrl + 'departures/' + stationCode + '/');
     }
 

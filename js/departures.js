@@ -18,6 +18,9 @@ var SearchStations = React.createClass({
             // indicates whether things are still loading
             loading: false,
 
+            // indicates whether the loading failed
+            failed: false,
+
             // all the station names that can be searched for
             stationNames: {},
 
@@ -35,17 +38,28 @@ var SearchStations = React.createClass({
 
         this.setState({loading: true});
 
-        $.when(stationData.getStationNames(), stationData.getStations()).done(
+        $.when(
+            stationData.getStationNames(),
+            stationData.getStations()
+        ).done(
             function(stationNames, stations) {
 
                 if (this.isMounted()) {
                     this.setState({
-                        'loading': false,
+                        'failed': false,
                         'stationNames': stationNames[0],
                         'stations': stations[0]
                     });
                 }
 
+            }.bind(this)
+        ).fail(
+            function() {
+                this.setState({failed: true});
+            }.bind(this)
+        ).always(
+            function() {
+                this.setState({loading: false});
             }.bind(this)
         );
 
@@ -59,7 +73,13 @@ var SearchStations = React.createClass({
 
         var resultsNode;
 
-        if (this.state.searchTerm.length > 1) {
+        if (this.state.failed) {
+            resultsNode = (
+                <section className="failed">
+                    Geen verbinding
+                </section>
+            );
+        } else if (this.state.searchTerm.length > 1) {
 
             if (this.state.loading) {
                 resultsNode = (
@@ -150,41 +170,73 @@ var Station = React.createClass({
 
     getInitialState: function() {
         return {
+            loading: false,
+            failed: false,
             station: null,
             departures: null
         };
     },
 
-    componentDidMount: function() {
+    componentWillMount: function() {
 
-        stationData.getStations().done(function(stations) {
-            this.setState({
-                'station': stations[this.getParams().stationName]
-            });
-        }.bind(this));
+        this.setState({loading: true});
 
-        stationData.getStation(
-            this.getParams().stationName
-        ).done(function(departures) {
-            this.setState({
-                'departures': departures
-            });
-        }.bind(this));
+        $.when(
+            this.getStation(),
+            this.getDepartures()
+        ).done(
+            function() {
+                this.setState({failed: false});
+            }.bind(this)
+        ).fail(
+            function() {
+                this.setState({failed: true});
+            }.bind(this)
+        ).always(
+            function() {
+                this.setState({loading: false});
+            }.bind(this)
+        );
 
+    },
+
+    getStation: function() {
+        return stationData.getStations().done(
+            function(stations) {
+                this.setState({
+                    station: stations[this.getParams().stationName]
+                });
+            }.bind(this)
+        );
+    },
+
+    getDepartures: function() {
+        return stationData.getDepartures(this.getParams().stationName).done(
+            function(departures) {
+                this.setState({'departures': departures});
+            }.bind(this)
+        );
     },
 
     render: function() {
 
         var headerContents;
         var departuresContents;
+        var headerContents;
 
         if (this.state.station) {
             headerContents = this.state.station.name;
-        } else {
-            headerContents = 'Bezig met laden...';
         }
 
-        if (this.state.departures) {
+        if (this.state.loading) {
+            departuresContents = (
+                <div className="loading">Bezig met laden...</div>
+            );
+        } else if (this.state.failed) {
+            departuresContents = (
+                <div className="failed">Geen verbinding</div>
+            );
+        } else {
 
             departures = [];
 
@@ -239,10 +291,6 @@ var Station = React.createClass({
                 </div>
             );
 
-        } else {
-            departuresContents = (
-                <div className="loading">Bezig met laden...</div>
-            );
         }
 
         return (
