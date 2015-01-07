@@ -65,15 +65,24 @@ module.exports = function(searchTerm, stationNames, stations) {
                         }
 
                         if (searchWord.length > 3) {
-                            levenshteinScore = new Levenshtein(searchWord, stationWord.substr(0, searchWord.length)).distance;
+
+                            levenshteinScore = new Levenshtein(
+                                searchWord,
+                                stationWord.substr(0, searchWord.length)
+                            ).distance;
+
                             if (levenshteinScore > 3) {
                                 score -= levenshteinScore;
                             } else {
                                 score += (3 - levenshteinScore) * 10;
                             }
+
                         }
 
-                        levenshteinScore = new Levenshtein(searchWord, stationWord).distance;
+                        levenshteinScore = new Levenshtein(
+                            searchWord, stationWord
+                        ).distance;
+
                         if (levenshteinScore > 3) {
                             score -= levenshteinScore;
                         } else {
@@ -84,7 +93,10 @@ module.exports = function(searchTerm, stationNames, stations) {
 
                 }
 
-                levenshteinScore = new Levenshtein(searchTerm, stationName).distance;
+                levenshteinScore = new Levenshtein(
+                    searchTerm, stationName
+                ).distance;
+
                 if (levenshteinScore > 3) {
                     score -= levenshteinScore;
                 } else {
@@ -94,11 +106,13 @@ module.exports = function(searchTerm, stationNames, stations) {
             }
 
             if (score > 0) {
+
                 results.push({
                     'code': station.code,
                     'name': station.name,
                     'score': score
                 });
+
             }
 
         }
