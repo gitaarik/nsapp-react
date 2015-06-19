@@ -8,6 +8,8 @@ var $ = require('jquery');
 var searchStations = require('./helpers/_search-stations.js');
 var stationData = require('./helpers/_station-data.js');
 
+require('./helpers/_focus-at-end.jquery.js');
+
 
 var SearchStations = React.createClass({
 
@@ -66,7 +68,7 @@ var SearchStations = React.createClass({
     },
 
     componentDidMount: function () {
-        this.refs.input.getDOMNode().focus();
+        $(this.refs.input.getDOMNode()).focusAtEnd();
     },
 
     render: function() {

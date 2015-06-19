@@ -1,4 +1,4 @@
-var jQuery = require('jquery');
+var $ = jQuery = require('jquery');
 
 /**
  * JQuery function to put the focus on a input element and put the
