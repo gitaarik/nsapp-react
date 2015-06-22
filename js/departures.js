@@ -30,7 +30,7 @@ var SearchStations = React.createClass({
             stations: {},
 
             // the search terms the user is supplying
-            searchTerm: this.props.searchTerm
+            searchTerm: ''
 
         };
 
