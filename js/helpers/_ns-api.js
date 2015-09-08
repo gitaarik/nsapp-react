@@ -1,7 +1,6 @@
 var $ = require('jquery');
 
-
-var stationData = Object.create({
+var nsAPI = Object.create({
 
     initialize: function() {
         this.baseUrl = 'http://nsapi.televisionsmostpopularartinstructors.com/api/v1/';
@@ -21,6 +20,6 @@ var stationData = Object.create({
 
 });
 
-stationData.initialize();
+nsAPI.initialize();
 
-module.exports = stationData;
+module.exports = nsAPI;

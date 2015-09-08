@@ -1,2 +1,10 @@
-Use react rooter:
-https://github.com/rackt/react-router/blob/master/docs/guides/overview.md
+- ditch jQuery and use npm request package for the requests
+- search for a good npm ORM to use for the managers
+  good candidate: YDN-DB (http://dev.yathit.com/ydn-db/index.html)
+- use the station manager to get the stations
+- make the station manager use local storage to keep a local cache of
+  the stations, should invalidate itself
+- also create a station names manager that works like the station
+  manager, including local cache
+- use offline.js for offline detection
+  (github.hubspot.com/offline/docs/welcome/)

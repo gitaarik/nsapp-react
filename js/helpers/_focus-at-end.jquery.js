@@ -1,10 +1,10 @@
-var $ = jQuery = require('jquery');
+var $ = require('jquery');
 
 /**
  * JQuery function to put the focus on a input element and put the
  * cursor at the end of it.
  */
-jQuery.fn.focusAtEnd = function() {
+$.fn.focusAtEnd = function() {
 
     return this.each(function() {
 

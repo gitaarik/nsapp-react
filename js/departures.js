@@ -6,10 +6,8 @@ var RouteHandler = Router.RouteHandler;
 var Link = Router.Link;
 var $ = require('jquery');
 var searchStations = require('./helpers/_search-stations.js');
-var stationData = require('./helpers/_station-data.js');
-
+var nsAPI = require('./helpers/_ns-api.js');
 require('./helpers/_focus-at-end.jquery.js');
-
 
 var SearchStations = React.createClass({
 
@@ -41,10 +39,10 @@ var SearchStations = React.createClass({
         this.setState({loading: true});
 
         $.when(
-            stationData.getStationNames(),
-            stationData.getStations()
+            nsAPI.getStationNames(),
+            nsAPI.getStations()
         ).done(
-            function(stationNames, stations) {
+            (stationNames, stations) => {
 
                 if (this.isMounted()) {
                     this.setState({
@@ -54,15 +52,15 @@ var SearchStations = React.createClass({
                     });
                 }
 
-            }.bind(this)
+            }
         ).fail(
-            function() {
+            () => {
                 this.setState({failed: true});
-            }.bind(this)
+            }
         ).always(
-            function() {
+            () => {
                 this.setState({loading: false});
-            }.bind(this)
+            }
         );
 
     },
@@ -145,14 +143,7 @@ var SearchResults = React.createClass({
 
         for (var index in this.props.data) {
             resultNodes.push(
-                <div key={index} className="result">
-                    <Link
-                        to="station" className="link"
-                        params={{stationName: this.props.data[index].code}}
-                    >
-                        {this.props.data[index].name}
-                    </Link>
-                </div>
+                <SearchResult key={index} data={this.props.data[index]} />
             );
         }
 
@@ -161,6 +152,30 @@ var SearchResults = React.createClass({
                 {resultNodes}
             </section>
         );
+
+    },
+
+});
+
+var SearchResult = React.createClass({
+
+    render: function() {
+
+        return (
+            <div key={this.props.data.key} className="result">
+                <Link
+                    to="station" className="station-name"
+                    params={{stationName: this.props.data.code}}
+                >
+                    {this.props.data.name}
+                </Link>
+                <div className="favorite-icon" onClick={this.toggleFavorite}></div>
+            </div>
+        );
+
+    },
+
+    toggleFavorite: function() {
 
     }
 
@@ -187,36 +202,36 @@ var Station = React.createClass({
             this.getStation(),
             this.getDepartures()
         ).done(
-            function() {
+            () => {
                 this.setState({failed: false});
-            }.bind(this)
+            }
         ).fail(
-            function() {
+            () => {
                 this.setState({failed: true});
-            }.bind(this)
+            }
         ).always(
-            function() {
+            () => {
                 this.setState({loading: false});
-            }.bind(this)
+            }
         );
 
     },
 
     getStation: function() {
-        return stationData.getStations().done(
-            function(stations) {
+        return nsAPI.getStations().done(
+            (stations) => {
                 this.setState({
                     station: stations[this.getParams().stationName]
                 });
-            }.bind(this)
+            }
         );
     },
 
     getDepartures: function() {
-        return stationData.getDepartures(this.getParams().stationName).done(
-            function(departures) {
+        return nsAPI.getDepartures(this.getParams().stationName).done(
+            (departures) => {
                 this.setState({'departures': departures});
-            }.bind(this)
+            }
         );
     },
 

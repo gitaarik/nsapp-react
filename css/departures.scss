@@ -69,15 +69,45 @@ $_red-color: #F00;
             height: calc(100vh - #{$departures-header-height + $input-height});
             overflow: auto;
 
-            .result .link {
-                padding: 20px 10px;
-                display: block;
-                font-size: 20px;
-                color: #000D66;
-                text-decoration: none;
+            .result {
+
+                position: relative;
+
+                .station-name {
+                    display: block;
+                    padding: 20px 10px;
+                    font-size: 20px;
+                    color: #000D66;
+                    text-decoration: none;
+                }
+
+                .favorite-icon {
+
+                    position: absolute;
+                    right: 15px;
+                    top: 14px;
+                    font-size: 30px;
+                    color: #AAA;
+                    cursor: pointer;
+
+                    &:hover {
+                        color: #FFE000;
+                    }
+
+                    &:after {
+                        content: '☆';
+                    }
+
+                    &.active:after {
+                        content: '★';
+                        color: #FFE000;
+                    }
+
+                }
+
             }
 
-            .result:nth-child(2n+1) .link {
+            .result:nth-child(2n+1) {
                 background: #F2F2F7;
             }
 
